@@ -17,13 +17,14 @@ public class ArchitectureTests
     }
 
     [Fact]
-    public void Controllers_Should_Not_Reference_Concrete_Repository_Classes()
+    public void Controllers_Should_Not_Reference_Repository_Layer()
     {
         var apiAssembly = typeof(InvoiceApp.Api.Controllers.InvoicesController).Assembly;
         var repositoryInterfaceType = typeof(IInvoiceRepository);
-        var concreteRepositoryTypes = apiAssembly
+        var repositoryLayerTypes = apiAssembly
             .GetTypes()
-            .Where(type => type != repositoryInterfaceType && repositoryInterfaceType.IsAssignableFrom(type))
+            .Where(repositoryInterfaceType.IsAssignableFrom)
+            .Append(repositoryInterfaceType)
             .ToList();
 
         var controllerTypes = apiAssembly
@@ -37,17 +38,17 @@ public class ArchitectureTests
                 var constructorParameters = type
                     .GetConstructors()
                     .SelectMany(ctor => ctor.GetParameters())
-                    .Where(parameter => concreteRepositoryTypes.Contains(parameter.ParameterType))
+                    .Where(parameter => repositoryLayerTypes.Contains(parameter.ParameterType))
                     .Select(parameter => $"{type.FullName} constructor parameter '{parameter.Name}' is typed as {parameter.ParameterType.FullName}");
 
                 var fieldTypes = type
                     .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(field => concreteRepositoryTypes.Contains(field.FieldType))
+                    .Where(field => repositoryLayerTypes.Contains(field.FieldType))
                     .Select(field => $"{type.FullName} field '{field.Name}' is typed as {field.FieldType.FullName}");
 
                 var propertyTypes = type
                     .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(property => concreteRepositoryTypes.Contains(property.PropertyType))
+                    .Where(property => repositoryLayerTypes.Contains(property.PropertyType))
                     .Select(property => $"{type.FullName} property '{property.Name}' is typed as {property.PropertyType.FullName}");
 
                 return constructorParameters.Concat(fieldTypes).Concat(propertyTypes);
@@ -56,6 +57,6 @@ public class ArchitectureTests
 
         Assert.True(
             violations.Count == 0,
-            "Controllers must depend on repository interfaces, not concrete repository classes. Violations: " + string.Join("; ", violations));
+            "Controllers must not depend on the repository layer directly; use a service instead. Violations: " + string.Join("; ", violations));
     }
 }
