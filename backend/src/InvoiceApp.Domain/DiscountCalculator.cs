@@ -32,4 +32,10 @@ public class DiscountCalculator
     {
         return Math.Round(amount * (1 - discountRate), 2);
     }
+
+    public decimal CalculateGst(Invoice invoice)
+    {
+        // Missing guard clause if invoice or its amount is null
+        return invoice.Amount * 0.18m;
+    }
 }
