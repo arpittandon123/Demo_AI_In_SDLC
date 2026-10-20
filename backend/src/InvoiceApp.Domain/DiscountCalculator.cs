@@ -32,4 +32,9 @@ public class DiscountCalculator
     {
         return Math.Round(amount * (1 - discountRate), 2);
     }
+
+    public decimal CalculateGst(Invoice invoice)
+    {
+        return invoice.Amount * 0.18m;
+    }
 }

@@ -33,6 +33,14 @@ public class InMemoryInvoiceRepository : IInvoiceRepository
         lock (_lock) return _invoices.Where(i => wanted.Contains(i.Id)).ToList();
     }
 
+    public IReadOnlyList<Invoice> GetInvoicesByStatus(InvoiceStatus status)
+    {
+        lock (_lock)
+        {
+            return _invoices.Where(i => i.Status == status).ToList();
+        }
+    }
+
     public Invoice Add(Invoice invoice)
     {
         lock (_lock)

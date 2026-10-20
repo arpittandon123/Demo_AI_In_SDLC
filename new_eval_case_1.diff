@@ -1,0 +1,14 @@
+diff --git a/backend/src/InvoiceApp.Domain/DiscountCalculator.cs b/backend/src/InvoiceApp.Domain/DiscountCalculator.cs
+index 9733ba3..d85f55a 100644
+--- a/backend/src/InvoiceApp.Domain/DiscountCalculator.cs
++++ b/backend/src/InvoiceApp.Domain/DiscountCalculator.cs
+@@ -32,4 +32,10 @@ public class DiscountCalculator
+     {
+         return Math.Round(amount * (1 - discountRate), 2);
+     }
++
++    public decimal CalculateGst(Invoice invoice)
++    {
++        return invoice.Amount * 0.18m;
++    }
+ }
