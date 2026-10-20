@@ -35,7 +35,6 @@ public class DiscountCalculator
 
     public decimal CalculateGst(Invoice invoice)
     {
-        // Missing guard clause if invoice or its amount is null
         return invoice.Amount * 0.18m;
     }
 }

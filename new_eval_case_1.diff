@@ -9,7 +9,6 @@ index 9733ba3..d85f55a 100644
 +
 +    public decimal CalculateGst(Invoice invoice)
 +    {
-+        // Missing guard clause if invoice or its amount is null
 +        return invoice.Amount * 0.18m;
 +    }
  }
